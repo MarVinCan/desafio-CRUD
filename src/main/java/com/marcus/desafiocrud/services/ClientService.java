@@ -18,12 +18,13 @@ public class ClientService {
     @Autowired
     private ClientRepository repository;
 
+//FIND BY ID
     @Transactional(readOnly = true)
     public ClientDTO findById(Long id){
         Optional<Client> result = repository.findById(id);
         Client client = result.get();
         return new ClientDTO(client);
-        
+//FIND ALL
      }
      @Transactional(readOnly = true)
     public Page<ClientDTO> findAll(Pageable pageable){
@@ -31,9 +32,8 @@ public class ClientService {
         Page<Client> resul =repository.findAll(pageable);
         return resul.map(x -> new ClientDTO(x));
     }
-    @Transactional(readOnly = true)
-
-
+//INSERT
+    @Transactional
     public ClientDTO insert(ClientDTO dto){
 
         Client entity = new Client();
@@ -42,6 +42,17 @@ public class ClientService {
         return new ClientDTO(entity);
 
     }
+//UPDATE
+    @Transactional
+    public ClientDTO update(Long id, ClientDTO dto){
+
+       Client entity = repository.getReferenceById(id);
+       copyDtoToEntity(dto, entity);
+       entity = repository.save(entity);
+       return new ClientDTO(entity);
+
+    }
+
 
 
 
