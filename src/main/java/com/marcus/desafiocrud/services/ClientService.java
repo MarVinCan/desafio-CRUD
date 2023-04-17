@@ -21,6 +21,8 @@ public class ClientService {
     @Autowired
     private ClientRepository repository;
 
+    
+
 //FIND BY ID
     @Transactional(readOnly = true)
     public ClientDTO findById(Long id){
@@ -39,10 +41,15 @@ public class ClientService {
     @Transactional
     public ClientDTO insert(ClientDTO dto){
 
-        Client entity = new Client();
+        try{
+            Client entity = new Client();
         copyDtoToEntity(dto, entity);
         entity = repository.save(entity);
-        return new ClientDTO(entity);
+        return new ClientDTO(entity);    
+        }
+        catch(DataIntegrityViolationException e){
+            throw new DatabaseException("Falha de integridade referencial");
+        } 
 
     }
 //UPDATE
@@ -73,7 +80,7 @@ public class ClientService {
             repository.deleteById(id);
         }catch(DataIntegrityViolationException e){
                 throw new DatabaseException("Falha de integridade referencial");
-     }             
+        }             
 
     }
 
@@ -86,4 +93,6 @@ public class ClientService {
         entity.setIncome(dto.getIncome());
     }
 
+
+    
 }
